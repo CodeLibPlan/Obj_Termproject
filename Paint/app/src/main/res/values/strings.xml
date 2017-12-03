@@ -1,0 +1,5 @@
+<resources>
+    <!--<string name="app_name">Paint</string>-->
+    <string name="app_name">그림판</string>
+    <string name="btn_save">저장</string>
+</resources>
