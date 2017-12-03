@@ -1,0 +1,40 @@
+Client 구성
+class Main 
+	class MsgListenerCallback
+		callback
+		
+
+class Connection
+	변수
+		String address
+	함수
+		void setAddress()
+		boolean startConnection()
+		boolean resetConnection()
+		boolean stopConnection()
+		? writer()
+		? reader()
+interface BackgroundListener
+
+interface BackgroundSender
+
+abstract class NetworkListener extends Thread implements BackgroundListener(상속하여 이용)
+	변수
+		LinkedQueue<byte[]?> msgQueue : 처리 가능 속도보다 더 많은 메시지가 수신되었을 때를 위한 버퍼.
+	생성자 : Network를 인자로 받음.this.start()를 수행함.(객체 생성 시점에 스레드 시작)
+	함수
+		void run() : 백그라운드에서 동작하다가 메시지가 수신되면 콜백을 실행해주는 역할.
+		abstract String callback() : 메시지를 받았을 경우 실행됨. 백그라운드 함수이므로 Handler 사용.
+		
+abstract class NetworkSender extends Thread implements BackgroundSender(객체를 만들어 이용)
+	변수
+		LinkedQueue<byte[]?> msgQueue : 처리 가능 속도보다 더 많은 메시지를 송신해야 할 때를 위한 버퍼.
+	생성자 : Network를 인자로 받음.
+	함수
+		void run() : 메시지를 송신하기 위한 백그라운드 작업 메서드. this.start()를 수행함.(객체 생성 시점에 서버 연결만을 위한 스레드 시작)(큐가 비었으므로)
+		boolean send() : 메시지를 송신함. this.start()를 수행함.(메시지 송신 시점에 스레드 시작)
+		
+위의 클래스를 이용하여
+MsgSender, MsgListener,
+PaletteSender, PaletteListener,
+FileSender, FileListener 정의.
