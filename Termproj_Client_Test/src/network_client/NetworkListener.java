@@ -12,6 +12,13 @@ public class NetworkListener extends Thread implements BackgroundListener {
 	//for Debug***
 	Random r = new Random();
 	//************
+	public void joinThread() {
+		try {
+			super.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 	public NetworkListener(Connection c, CallbackEvent<String> ev) {
 		this.conn = c;
 		this.ev = ev;

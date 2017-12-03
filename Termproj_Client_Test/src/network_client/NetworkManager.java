@@ -81,6 +81,7 @@ public abstract class NetworkManager {
 		NetworkManager.listener = new NetworkListener(connection, new CallbackForThreeMessage());//메시지 리스너 클래스에 넣는다.
 		NetworkManager.sender = new NetworkSender(connection);
 		listener.start();
+		listener.joinThread();
 	}
 	public static void login(String authinfo) {//로그인 보내기 : 각 닉네임, 방이름, 방 비밀번호마다 콜론(:)으로 구분
 		NetworkManager.sender.send(MsgLinker.msgBuild(MsgLinker.LOGINTOKEN, authinfo));

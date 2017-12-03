@@ -3,9 +3,9 @@ package app;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import termproj.org.json.JSONArray;
+import termproj.org.json.JSONException;
+import termproj.org.json.JSONObject;
 
 import message.MsgLinker;
 

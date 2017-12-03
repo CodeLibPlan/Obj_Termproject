@@ -1,11 +1,9 @@
 //server
 package message;
 
-import java.util.Iterator;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import termproj.org.json.JSONArray;
+import termproj.org.json.JSONException;
+import termproj.org.json.JSONObject;
 
 public class MsgLinker {
 	public final static String MSGTOKEN = "MESSAGE";

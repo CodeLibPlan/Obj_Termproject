@@ -12,6 +12,14 @@ public class DummyListener extends Thread implements BackgroundListener {
 	//for Debug***
 	Random r = new Random();
 	//************
+	
+	public void joinThread() {
+		try {
+			super.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 	public DummyListener(Connection c, CallbackEvent ev) {
 		this.conn = c;
 		this.ev = ev;
