@@ -11,7 +11,7 @@ public abstract class NetworkManager {
 	private static CallbackEvent<String[]> userListEvent = new DefaultCallback();
 
 	private static Connection connection;
-	private static BackgroundListener listener;
+	private static NetworkListener listener;
 	private static BackgroundSender sender;
 
 	// public Getter & Setter
@@ -32,7 +32,7 @@ public abstract class NetworkManager {
 		NetworkManager.userListEvent = newUserListEvent;
 	}
 	//inner class
-	private static class CallbackForThreeMessage implements CallbackEvent<String>{//NetworkListener¿¡ »ğÀÔÇÒ Å¬·¡½º
+	private static class CallbackForThreeMessage implements CallbackEvent<String> {//NetworkListenerì— ì‚½ì…í•  í´ë˜ìŠ¤
 		
 		@Override
 		public void run(String input) {
@@ -67,35 +67,39 @@ public abstract class NetworkManager {
 			}
 		}
 	}
-	private static class DefaultCallback implements CallbackEvent<String[]>{//Callback Event¸¦ µû·Î ¼³Á¤ÇÏÁö ¾Ê¾ÒÀ» ¶§
+	private static class DefaultCallback implements CallbackEvent<String[]> {//Callback Eventë¥¼ ë”°ë¡œ ì„¤ì •í•˜ì§€ ì•Šì•˜ì„ ë•Œ
 
 		@Override
 		public void run(String[] input) {
-			System.out.println("±â´ÉÀÌ ¼³Á¤µÇÁö ¾Ê¾Ò½À´Ï´Ù. : "+input);
+			System.out.println("ê¸°ëŠ¥ì´ ì„¤ì •ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤. : "+input);
 		}
 		
 	}
 	//private method
-	public static void init() {//ÀÌ ÇÔ¼ö¸¦ È£ÃâÇÏ¿© ¿¬°áÀ» ½ÃÀÛ
-		NetworkManager.connection = new Connection("newscrap.iptime.org",13461);//Ä¿³Ø¼Ç °´Ã¼. ¼­¹ö ÁÖ¼Ò ¹× Æ÷Æ®¸¦ ³Ö´Â´Ù. Áö±İÀº °¡Â¥ ÁÖ¼Ò
-		NetworkManager.listener = new NetworkListener(connection, new CallbackForThreeMessage());//¸Ş½ÃÁö ¸®½º³Ê Å¬·¡½º¿¡ ³Ö´Â´Ù.
+	public static void init() {//ì´ í•¨ìˆ˜ë¥¼ í˜¸ì¶œí•˜ì—¬ ì—°ê²°ì„ ì‹œì‘
+		NetworkManager.connection = new Connection("newscrap.iptime.org",13461);//ì»¤ë„¥ì…˜ ê°ì²´. ì„œë²„ ì£¼ì†Œ ë° í¬íŠ¸ë¥¼ ë„£ëŠ”ë‹¤. ì§€ê¸ˆì€ ê°€ì§œ ì£¼ì†Œ
+
+
+		NetworkManager.listener = new NetworkListener(connection, new CallbackForThreeMessage());//ë©”ì‹œì§€ ë¦¬ìŠ¤ë„ˆ í´ë˜ìŠ¤ì— ë„£ëŠ”ë‹¤.
 		NetworkManager.sender = new NetworkSender(connection);
 		listener.start();
-		listener.joinThread();
 	}
-	public static void login(String authinfo) {//·Î±×ÀÎ º¸³»±â : °¢ ´Ğ³×ÀÓ, ¹æÀÌ¸§, ¹æ ºñ¹Ğ¹øÈ£¸¶´Ù Äİ·Ğ(:)À¸·Î ±¸ºĞ
+	public static void login(String authinfo) {//ë¡œê·¸ì¸ ë³´ë‚´ê¸° : ê° ë‹‰ë„¤ì„, ë°©ì´ë¦„, ë°© ë¹„ë°€ë²ˆí˜¸ë§ˆë‹¤ ì½œë¡ (:)ìœ¼ë¡œ êµ¬ë¶„
+		if(!connection.isConnected()){
+			NetworkManager.init();
+		}
 		NetworkManager.sender.send(MsgLinker.msgBuild(MsgLinker.LOGINTOKEN, authinfo));
 	}
-	public static void chat(String chat) {//¸Ş½ÃÁö º¸³»±â : ½ºÆ®¸µ¸¸ ³Ö¾îÁÖ¸é ¾Ë¾Æ¼­ Ã³¸®
+	public static void chat(String chat) {//ë©”ì‹œì§€ ë³´ë‚´ê¸° : ìŠ¤íŠ¸ë§ë§Œ ë„£ì–´ì£¼ë©´ ì•Œì•„ì„œ ì²˜ë¦¬
 		NetworkManager.sender.send(MsgLinker.msgBuild(MsgLinker.MSGTOKEN, chat));
 	}
-	public static void draw(String draw) {//µå·ÎÀ× µ¥ÀÌÅÍ º¸³»±â : ½ºÆ®¸µ¸¸ ³Ö¾îÁÖ¸é ¾Ë¾Æ¼­ Ã³¸®.
+	public static void draw(String draw) {//ë“œë¡œì‰ ë°ì´í„° ë³´ë‚´ê¸° : ìŠ¤íŠ¸ë§ë§Œ ë„£ì–´ì£¼ë©´ ì•Œì•„ì„œ ì²˜ë¦¬.
 		NetworkManager.sender.send(MsgLinker.msgBuild(MsgLinker.DRAWTOKEN, draw));
 	}
-	public static void file(String file) {//ÆÄÀÏ º¸³»±â : ½ºÆ®¸µ¸¸ ³Ö¾îÁÖ¸é ¾Ë¾Æ¼­ Ã³¸®.
+	public static void file(String file) {//íŒŒì¼ ë³´ë‚´ê¸° : ìŠ¤íŠ¸ë§ë§Œ ë„£ì–´ì£¼ë©´ ì•Œì•„ì„œ ì²˜ë¦¬.
 		NetworkManager.sender.send(MsgLinker.msgBuild(MsgLinker.FILETOKEN, file));
 	}
-	public static void userList() {//À¯Àú ¸®½ºÆ® ¿äÃ» : ÀÌ ÇÔ¼ö¸¦ È£ÃâÇÏ¸é À¯Àú¸®½ºÆ®¸¦ ºÒ·¯¿È.
+	public static void userList() {//ìœ ì € ë¦¬ìŠ¤íŠ¸ ìš”ì²­ : ì´ í•¨ìˆ˜ë¥¼ í˜¸ì¶œí•˜ë©´ ìœ ì €ë¦¬ìŠ¤íŠ¸ë¥¼ ë¶ˆëŸ¬ì˜´.
 		NetworkManager.sender.send(MsgLinker.msgBuild(MsgLinker.USERLISTTOKEN, ""));
 	}
 }

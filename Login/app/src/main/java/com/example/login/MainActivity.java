@@ -1,14 +1,19 @@
 package com.example.login;
 
+import android.net.Network;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import java.net.Socket;
+
+import network_client.CallbackEvent;
+import network_client.NetworkManager;
 
 /**
  * Created by 전혜민 on 2017-11-26.
@@ -22,13 +27,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button log;
     EditText et_room, et_id, et_pw;
     String sR, sI, sP;
-    Connection connection = new Connection("newscrap.iptime.org", 18080);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mHandler = new Handler();
+        this.run();
 
         et_room = (EditText) findViewById(R.id.etRoomName);
         et_id = (EditText) findViewById(R.id.etUserName);
@@ -48,14 +53,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void run() {
-        ReceiveMessageCallback callback = new ReceiveMessageCallback();//객체를 만들어서,
-        BackgroundListener listener = new DummyListener(connection, callback);//메시지 리스너 클래스에 넣는다.
-
-        BackgroundSender sender = new DummySender(connection);//메시지 보내는 클래스
-        listener.start();//메시지 받기 시작
-        callback.run(listener.toString());
-        sender.send("message");//메시지 보내기
-
+        ReceiveMessageCallback callback = new ReceiveMessageCallback();
+        NetworkManager.setLoginEvent(callback);
+        NetworkManager.init();
     }
 
     @Override
@@ -71,26 +71,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         return;
                     }
                         }
-
-                BackgroundSender bg_sender = new DummySender(connection);
-                bg_sender.send("LOGIN:" + sI + ":" + sR + ":" + sP);
-                ReceiveMessageCallback callback = new ReceiveMessageCallback();
-                BackgroundListener listener = new DummyListener(connection, callback);
-                listener.start();
-                callback.run(listener.toString());
-
-
-
+                NetworkManager.login(sI + ":" + sR + ":" + sP);
         }
     }
 
-    class ReceiveMessageCallback implements CallbackEvent{
+    class ReceiveMessageCallback implements CallbackEvent<String[]> {
         //CallbackEvent를 상속하여
         //run 메서드를 오버라이드하면 run메서드 안에 있는 코드가 메시지 수신 시 작동한다.
         //스레드 방식으로 작동하니 일부 UI 관련 코드가 작동하지 않음!
         @Override
-        public void run(String input) {
-            //  Log.d(this.getClass().getName()," message arrived! : "+input);
+        public void run(String[] input) {
+            Log.d(this.getClass().getName()," message arrived! : "+input[0]);
 
         }
 

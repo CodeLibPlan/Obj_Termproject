@@ -1,5 +1,9 @@
 package com.example.login;
 
+import network_client.BackgroundSender;
+import network_client.Connection;
+import network_client.LinkedQueue;
+
 /**
  * Created by 전혜민 on 2017-11-22.
  */
